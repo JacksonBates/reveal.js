@@ -4,47 +4,36 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+		<title>Slides Dashboard</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
+		<!--<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/black.css">
 
 		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
-
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
+		<!--<link rel="stylesheet" href="lib/css/zenburn.css">-->
 	</head>
 	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+		<h1>Available Slide Decks</h1>
+		<div class='slideList'></div>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
 
-		<script>
-			// More info https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				history: true,
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>
+		var htmlFiles = [];
+    $.getJSON('https://api.github.com/repos/jacksonbates/slides/git/refs/heads/gh-pages', function(data) {
+			var sha = data.object.sha;
+			$.getJSON('https://api.github.com/repos/jacksonbates/slides/git/trees/' + sha, function(data) {
+				data.tree.forEach(function(file) {
+					var path = file.path;
+					if (path.match(/.*(.html)/) && !path.match(/index.html/)) {
+						// htmlFile.push(file.path);
+						console.log(path);
+						$('.slideList').add("<div><a href='http://jacksonbates.me/slides/" + path + "'>" + path.replace(/(.html)/, '') + "</a></div>").appendTo('.slideList');	
 
-				// More info https://github.com/hakimel/reveal.js#dependencies
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
+					}
+				})
+			})
+		})
+	</script>
 	</body>
 </html>
